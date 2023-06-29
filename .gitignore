@@ -1,0 +1,9 @@
+/cmake-build-debug/
+/cmake-build-minsizerel/
+/cmake-build-debug-coverage/
+/cmake-build-release/
+/cmake-build-relwithdebinfo/
+/keywords.dot
+/keywords.dot.svg
+/out.dot
+/out.dot.svg
