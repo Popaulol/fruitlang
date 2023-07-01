@@ -18,9 +18,10 @@ namespace fruitlang {
     private:
         Lexer lexer;
 
-        explicit Parser(const std::string& source) : lexer(source){}
+        explicit Parser(const std::string &source) : lexer(source) {}
         std::shared_ptr<Module> Mod();
-        template<bool is_fn> std::shared_ptr<ast> callable_definition();
+        template<bool is_fn>
+        std::shared_ptr<ast> callable_definition();
         std::shared_ptr<expr> expression();
         std::shared_ptr<expr> equality();
         std::shared_ptr<expr> comparison();
@@ -30,18 +31,17 @@ namespace fruitlang {
         std::shared_ptr<expr> unary();
         std::shared_ptr<expr> primary();
 
-        Type type();
+        ast_Type type();
 
-        bool match( std::initializer_list<TokenType>);
+        bool match(std::initializer_list<TokenType>);
         bool check(TokenType);
         bool is_at_end();
-        Token consume(TokenType, const std::string&);
-        [[noreturn]] void error(const std::string&);
+        Token consume(TokenType, const std::string &);
+        [[noreturn]] void error(const std::string &);
 
 
     public:
-        static std::shared_ptr<ast> parse(const std::string& source);
-
+        static std::shared_ptr<ast> parse(const std::string &source);
     };
 
 }// namespace fruitlang

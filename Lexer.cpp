@@ -6,7 +6,8 @@
 template<bool first_char>
 static bool is_ident_valid(char c) {
     if (first_char) return std::isalpha(c) || c == '_' || c == '$';
-    else return std::isalnum(c) || c == '_' || c == '$';
+    else
+        return std::isalnum(c) || c == '_' || c == '$';
 }
 
 
@@ -87,7 +88,7 @@ fruitlang::Token fruitlang::Lexer::scanToken() {
     }
 }
 fruitlang::Token fruitlang::Lexer::current() {
-    std::cout <<  "curr:\t";
+    std::cout << "curr:\t";
     current_token.print();
     return this->current_token;
 }
@@ -105,7 +106,7 @@ fruitlang::Token fruitlang::Lexer::advance() {
     this->last_token = current_token;
     this->current_token = next_token;
     this->next_token = scanToken();
-    std::cout <<  "adv:\t";
+    std::cout << "adv:\t";
     current_token.print();
     return this->current_token;
 }
@@ -149,12 +150,11 @@ fruitlang::Token fruitlang::Lexer::chr() {
     }
     next_char();
     return {TokenType::character, source.substr(start, start - current_pos), start};
-
 }
 fruitlang::Token fruitlang::Lexer::number() {
-    while(std::isdigit(peek())) next_char();
+    while (std::isdigit(peek())) next_char();
     if (peek() == '.' && isdigit(peek_next())) next_char();
-    while(std::isdigit(peek())) next_char();
+    while (std::isdigit(peek())) next_char();
     return {TokenType::number, source.substr(start, current_pos - start), current_pos - 1};
 }
 char fruitlang::Lexer::peek_next() {

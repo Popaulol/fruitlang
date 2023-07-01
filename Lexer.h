@@ -48,8 +48,7 @@ namespace fruitlang {
         Token next();
         Token advance();
 
-        [[nodiscard]] uint64_t line() const {return current_line;};
-
+        [[nodiscard]] uint64_t line() const { return current_line; };
     };
 }// namespace fruitlang
 

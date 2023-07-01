@@ -16,16 +16,16 @@ namespace fruitlang {
         friend class Module;
         friend class callable;
         friend class call;
+
     protected:
-        virtual uint64_t render_dot(std::ofstream&) = 0;
-        ;
+        virtual uint64_t render_dot(std::ofstream &) = 0;
 
     public:
         virtual ~ast() = 0;
-        void render_dot(const std::string&);
+        void render_dot(const std::string &);
         virtual llvm::Function *TopLVLCodegen() {
-                std::cerr << "ast::TopLVLCodegen should never be called.\n";
-                return nullptr;
+            std::cerr << "ast::TopLVLCodegen should never be called.\n";
+            return nullptr;
         }
     };
 

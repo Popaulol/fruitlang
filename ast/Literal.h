@@ -20,6 +20,7 @@ namespace fruitlang {
     protected:
         uint64_t render_dot(std::ofstream &) override;
         llvm::Value *codegen() override { return CodegenError("Integer sind aktuell nicht implementiert!"); };
+        std::shared_ptr<Type> typecheck(fruitlang::Typechecker &) override;
 
     public:
         ~Int_Literal() override = default;
@@ -32,6 +33,7 @@ namespace fruitlang {
     protected:
         uint64_t render_dot(std::ofstream &) override;
         llvm::Value *codegen() override;
+        std::shared_ptr<Type> typecheck(fruitlang::Typechecker &) override;
 
     public:
         ~Float_Literal() override = default;

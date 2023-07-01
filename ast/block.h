@@ -12,8 +12,9 @@ namespace fruitlang {
 
     class block : public expr {
         std::vector<expr> contents;
+
     public:
-        explicit block(std::vector<expr> contents) : contents(std::move(contents)) {};
+        explicit block(std::vector<expr> contents) : contents(std::move(contents)){};
     };
 
 }// namespace fruitlang

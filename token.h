@@ -50,7 +50,7 @@ namespace fruitlang {
         Comma,
         Period,
         Arrow,
-        
+
         Newline,
         Semicolon,
 
@@ -79,14 +79,14 @@ namespace fruitlang {
         std::string content;
         uint64_t pos;
 
-        Token() : Type(TokenType::ERROR), pos(0) {};
+        Token() : Type(TokenType::ERROR), pos(0){};
 
-        Token(TokenType type, std::string content, uint64_t pos) : Type(type), content(std::move(content)), pos(pos) {};
+        Token(TokenType type, std::string content, uint64_t pos) : Type(type), content(std::move(content)), pos(pos){};
 
         void print() const {
-            std::cout << "TOKEN:\ttype = " << (int)Type << "\tcontent: `" << content << "`\tpos: " << pos << std::endl;
+            std::cout << "TOKEN:\ttype = " << (int) Type << "\tcontent: `" << content << "`\tpos: " << pos << std::endl;
         }
     };
-}
+}// namespace fruitlang
 
 #endif//FRUITLANG_TOKEN_H

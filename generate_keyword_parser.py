@@ -26,7 +26,8 @@ class TreePart:
 
     def render_dot(self, f):
         newline = '\\n'
-        f.write(f"{'node_' + self.set_chars} [label=\"{'Set Chard: ' + self.set_chars + newline + 'Key:' + self.key}\"];\n")
+        f.write(
+            f"{'node_' + self.set_chars} [label=\"{'Set Chard: ' + self.set_chars + newline + 'Key:' + self.key}\"];\n")
 
         for k, child in self.children.items():
             child.render_dot(f)

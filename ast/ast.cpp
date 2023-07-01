@@ -6,7 +6,7 @@
 
 namespace fruitlang {
     ast::~ast() = default;
-    void ast::render_dot(const std::string& name) {
+    void ast::render_dot(const std::string &name) {
         std::ofstream file;
         file.open(name);
         file << "digraph ast { \n";

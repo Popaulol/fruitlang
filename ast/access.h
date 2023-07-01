@@ -13,11 +13,13 @@ namespace fruitlang {
     class access : public expr {
     private:
         std::string name;
+
     protected:
         uint64_t render_dot(std::ofstream &) override;
-        llvm::Value * codegen() override;
+        llvm::Value *codegen() override;
+
     public:
-        explicit access(std::string name) : name(std::move(name)) {};
+        explicit access(std::string name) : name(std::move(name)){};
         ~access() override = default;
     };
 

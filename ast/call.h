@@ -14,12 +14,14 @@ namespace fruitlang {
     private:
         std::string ident;
         std::vector<std::shared_ptr<expr>> args;
+
     protected:
         uint64_t render_dot(std::ofstream &) override;
-        llvm::Value * codegen() override;
+        llvm::Value *codegen() override;
+
     public:
         ~call() override = default;
-        call(std::string ident, std::vector<std::shared_ptr<expr>> args) : ident(std::move(ident)), args(std::move(args)) {};
+        call(std::string ident, std::vector<std::shared_ptr<expr>> args) : ident(std::move(ident)), args(std::move(args)){};
     };
 
 }// namespace fruitlang

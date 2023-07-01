@@ -13,8 +13,8 @@ namespace fruitlang {
         return own_id;
     }
     llvm::Value *access::codegen() {
-        llvm::Value *V = NamedValues[name];
-        if(!V) CodegenError("Unknown variable name");
+        llvm::Value *V = variables[name];
+        if (!V) CodegenError("Unknown variable name");
         return V;
     }
 }// namespace fruitlang

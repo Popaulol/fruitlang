@@ -22,8 +22,11 @@ namespace fruitlang {
         std::vector<std::shared_ptr<ast>> defs;
         consume(TokenType::Identifier, "Module needs a name");
         Token name = lexer.prev();
-        while (match({TokenType::fn, TokenType::proc, TokenType::mod})) {
+        while (match({TokenType::Newline, TokenType::Semicolon, TokenType::fn, TokenType::proc, TokenType::mod})) {
             switch (lexer.prev().Type) {
+                case TokenType::Newline:
+                case TokenType::Semicolon:
+                    continue;
                 case TokenType::fn:
                     defs.push_back(callable_definition<true>());
                     break;
@@ -59,7 +62,7 @@ namespace fruitlang {
             } while (match({TokenType::Comma}));
             consume(TokenType::RightParentheses, "Expected )");
         }
-        consume(TokenType::Arrow, "Expected Return Type specifier");
+        consume(TokenType::Arrow, "Expected Return ast_Type specifier");
         auto return_type = type();
         if (match({TokenType::Semicolon, TokenType::Newline})) {
             if constexpr (is_fn) return std::make_shared<func>(name, nullptr, args, return_type);
@@ -68,6 +71,7 @@ namespace fruitlang {
         }
         consume(TokenType::Colon, "Expected `;`, `:` or end of Line.");
         auto content = expression();
+        if (!match({TokenType::Semicolon, TokenType::Newline})) consume(TokenType::ERROR, "Expected `;` or end of Line.");
         if constexpr (is_fn) return std::make_shared<func>(name, content, args, return_type);
         else
             return std::make_shared<proc>(name, content, args, return_type);
@@ -213,6 +217,7 @@ namespace fruitlang {
         if (match({TokenType::LeftParentheses})) {
             auto expr = expression();
             consume(TokenType::RightParentheses, "Expect ')' after expression.");
+            return expr;
         }
         if (match({TokenType::Identifier})) {
             std::string name = lexer.prev().content;
@@ -221,6 +226,7 @@ namespace fruitlang {
                 do {
                     args.push_back(expression());
                 } while (match({TokenType::Comma}));
+                consume(TokenType::RightParentheses, "Expected `)`");
                 return std::make_shared<call>(name, args);
             }
             return std::make_shared<fruitlang::access>(name);
@@ -229,9 +235,9 @@ namespace fruitlang {
         error("Expect Expression");
     }
 
-    Type Parser::type() {
-        consume(TokenType::Identifier, "Expected Type name");
-        return Type(lexer.prev().content);
+    ast_Type Parser::type() {
+        consume(TokenType::Identifier, "Expected ast_Type name");
+        return ast_Type(lexer.prev().content);
     }
 
     bool Parser::match(std::initializer_list<TokenType> types) {
