@@ -2,6 +2,8 @@
 // Created by paul on 25.06.23.
 //
 
+#include "../includes.h"
+
 #ifndef FRUITLANG_DEFINITION_H
 #define FRUITLANG_DEFINITION_H
 

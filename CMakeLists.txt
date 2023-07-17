@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.25)
+cmake_minimum_required(VERSION 3.16)
 project(fruitlang)
 
 find_package(LLVM REQUIRED CONFIG)
@@ -14,7 +14,7 @@ add_definitions(${LLVM_DEFINITIONS_LIST})
 
 
 # Now build our tools
-add_executable(fruitlang main.cpp Lexer.cpp Lexer.h token.h ast/ast.cpp ast/ast.h ast/definition.cpp ast/definition.h ast/expr.cpp ast/expr.h ast/module.cpp ast/module.h ast/block.cpp ast/block.h ast/binary_operations.cpp ast/binary_operations.h ast/callable.cpp ast/callable.h ast/ast_Type.cpp ast/ast_Type.h ast/call.cpp ast/call.h ast/unary_operations.cpp ast/unary_operations.h Parser.cpp Parser.h ast/Literal.cpp ast/Literal.h utils.cpp utils.h codegen.cpp codegen.h ast/access.cpp ast/access.h Typechecker.cpp Typechecker.h)
+add_executable(fruitlang main.cpp Lexer.cpp Lexer.h token.h ast/ast.cpp ast/ast.h ast/expr.cpp ast/expr.h ast/module.cpp ast/module.h ast/block.cpp ast/block.h ast/binary_operations.cpp ast/binary_operations.h ast/callable.cpp ast/callable.h ast/ast_Type.cpp ast/ast_Type.h ast/call.cpp ast/call.h ast/unary_operations.cpp ast/unary_operations.h Parser.cpp Parser.h ast/Literal.cpp ast/Literal.h utils.cpp utils.h codegen.cpp codegen.h ast/access.cpp ast/access.h Typechecker.cpp Typechecker.h includes.h)
 
 
 # Find the libraries that correspond to the LLVM components

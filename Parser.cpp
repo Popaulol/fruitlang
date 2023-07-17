@@ -223,10 +223,12 @@ namespace fruitlang {
             std::string name = lexer.prev().content;
             if (match({TokenType::LeftParentheses})) {
                 std::vector<std::shared_ptr<expr>> args;
-                do {
-                    args.push_back(expression());
-                } while (match({TokenType::Comma}));
-                consume(TokenType::RightParentheses, "Expected `)`");
+                if (!match({TokenType::RightParentheses})) {
+                    do {
+                        args.push_back(expression());
+                    } while (match({TokenType::Comma}));
+                    consume(TokenType::RightParentheses, "Expected `)`");
+                }
                 return std::make_shared<call>(name, args);
             }
             return std::make_shared<fruitlang::access>(name);

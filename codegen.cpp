@@ -10,6 +10,7 @@ namespace fruitlang {
     std::map<std::string, llvm::Value *> variables;
     std::unique_ptr<llvm::legacy::FunctionPassManager> function_pass_manager;
     std::unique_ptr<llvm::orc::KaleidoscopeJIT> jit_compiler;
+    llvm::ExitOnError ExitOnErr;
 
     llvm::Value *CodegenError(std::string const &msg) {
         std::cerr << "Codegen Error: " << msg << "\n";

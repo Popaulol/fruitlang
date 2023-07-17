@@ -2,12 +2,15 @@
 // Created by paul on 25.06.23.
 //
 
+#include "../includes.h"
+
 #ifndef FRUITLANG_AST_TYPE_H
 #define FRUITLANG_AST_TYPE_H
 
+#include "ast.h"
+
 #include <utility>
 
-#include "ast.h"
 namespace fruitlang {
 
     class ast_Type : public ast {

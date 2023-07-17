@@ -3,10 +3,18 @@
 //
 
 #include "binary_operations.h"
+
+#include "../Typechecker.h"
 #include "../utils.h"
+
 uint64_t fruitlang::binary_op::render_dot(std::ofstream &file) {
     auto my_id = id();
-    file << "id_" << my_id << " [label=\"" << op() << "\"];\n";
+    std::string t_name = "NULL";
+    if (type) {
+        t_name = type->name;
+    }
+    file << "id_" << my_id << " [label=\"" << op() << "\\n"
+         << "Type: " << t_name << "\"];\n";
 
     auto lhs_id = lhs->render_dot(file);
     file << "id_" << my_id << " -> "
@@ -18,58 +26,133 @@ uint64_t fruitlang::binary_op::render_dot(std::ofstream &file) {
 
     return my_id;
 }
-llvm::Value *fruitlang::binary_op::codegen() {
-    llvm::Value *L = lhs->codegen();
-    llvm::Value *R = rhs->codegen();
+llvm::Value *fruitlang::binary_op::codegen(fruitlang::Typechecker &typechecker) {
+    llvm::Value *L = lhs->codegen(typechecker);
+    llvm::Value *R = rhs->codegen(typechecker);
     if (!L || !R)
         return nullptr;
 
-    return sub_codegen(L, R);
+    return sub_codegen(L, R, typechecker);
 }
-std::shared_ptr<fruitlang::Type> fruitlang::binary_op::typecheck(fruitlang::Typechecker &typechecker) {
-    auto lhs_type = lhs->typecheck(typechecker);
-    auto rhs_type = lhs->typecheck(typechecker);
+fruitlang::Type fruitlang::binary_op::typecheck(fruitlang::Typechecker &typechecker) {
+    auto lhs_type = lhs->get_type(typechecker);
+    auto rhs_type = rhs->get_type(typechecker);
+    if (lhs_type == rhs_type) return lhs_type;
+
+
+    auto new_lhs = typechecker.promote_type_to(lhs, rhs_type);
+    if (new_lhs) {
+        lhs = new_lhs;
+        return validate_and_fix_type(rhs_type, typechecker);
+    }
+
+    auto new_rhs = typechecker.promote_type_to(rhs, lhs_type);
+    if (new_rhs) {
+        rhs = new_rhs;
+        return validate_and_fix_type(lhs_type, typechecker);
+    }
+
+    return typechecker.Error("Complex Promotions aren't implemented at this point.");
 }
-llvm::Value *fruitlang::plus::sub_codegen(llvm::Value *L, llvm::Value *R) {
-    return ir_builder->CreateFAdd(L, R, "addtmp");
+llvm::Value *fruitlang::plus::sub_codegen(llvm::Value *L, llvm::Value *R, fruitlang::Typechecker &typechecker) {
+    if (typechecker.is_float(get_type(typechecker)))
+        return ir_builder->CreateFAdd(L, R, "faddtmp");
+    if (typechecker.is_int(get_type(typechecker)))
+        return ir_builder->CreateAdd(L, R, "addtmp");
+
+    return CodegenError("Add of invalid types");
 }
-llvm::Value *fruitlang::minus::sub_codegen(llvm::Value *L, llvm::Value *R) {
-    return ir_builder->CreateFSub(L, R, "subtmp");
+llvm::Value *fruitlang::minus::sub_codegen(llvm::Value *L, llvm::Value *R, fruitlang::Typechecker &typechecker) {
+    if (typechecker.is_float(get_type(typechecker)))
+        return ir_builder->CreateFSub(L, R, "fsubtmp");
+    if (typechecker.is_int(get_type(typechecker)))
+        return ir_builder->CreateSub(L, R, "subtmp");
+
+    return CodegenError("Sub of invalid types");
 }
-llvm::Value *fruitlang::times::sub_codegen(llvm::Value *L, llvm::Value *R) {
-    return ir_builder->CreateFMul(L, R, "multmp");
+llvm::Value *fruitlang::times::sub_codegen(llvm::Value *L, llvm::Value *R, fruitlang::Typechecker &typechecker) {
+    if (typechecker.is_float(get_type(typechecker)))
+        return ir_builder->CreateFMul(L, R, "fmultmp");
+    if (typechecker.is_int(get_type(typechecker)))
+        return ir_builder->CreateMul(L, R, "multmp");
+
+    return CodegenError("Mul of invalid types");
 }
-llvm::Value *fruitlang::div::sub_codegen(llvm::Value *L, llvm::Value *R) {
-    return ir_builder->CreateFDiv(L, R, "divtmp");
+llvm::Value *fruitlang::div::sub_codegen(llvm::Value *L, llvm::Value *R, fruitlang::Typechecker &typechecker) {
+    if (typechecker.is_float(get_type(typechecker)))
+        return ir_builder->CreateFDiv(L, R, "fdivtmp");
+    if (typechecker.is_int(get_type(typechecker)))
+        return ir_builder->CreateSDiv(L, R, "divtmp");
+
+    return CodegenError("Div of invalid types");
 }
-llvm::Value *fruitlang::power::sub_codegen(llvm::Value *, llvm::Value *) {
+llvm::Value *fruitlang::power::sub_codegen(llvm::Value *, llvm::Value *, fruitlang::Typechecker &) {
     return CodegenError("Exponentiation is not implemented currently.");
 }
-llvm::Value *fruitlang::mod::sub_codegen(llvm::Value *, llvm::Value *) {
-    return CodegenError("Modulus is not implemented currently.");
-    ;
+llvm::Value *fruitlang::mod::sub_codegen(llvm::Value *L, llvm::Value *R, fruitlang::Typechecker &typechecker) {
+    if (typechecker.is_float(get_type(typechecker)))
+        return ir_builder->CreateFRem(L, R, "fmodtemp");
+    if (typechecker.is_int(get_type(typechecker)))
+        return ir_builder->CreateSRem(L, R, "modtemp");
+    return CodegenError("Mod of invalid types");
 }
-llvm::Value *fruitlang::comp_not_equal::sub_codegen(llvm::Value *L, llvm::Value *R) {
-    L = ir_builder->CreateFCmpUNE(L, R, "neqtmp");
-    return ir_builder->CreateUIToFP(L, llvm::Type::getDoubleTy(*llvm_context), "booltmp");
+llvm::Value *fruitlang::comp_not_equal::sub_codegen(llvm::Value *L, llvm::Value *R, fruitlang::Typechecker &typechecker) {
+    if (typechecker.is_float(get_type(typechecker)))
+        return ir_builder->CreateFCmpUNE(L, R, "fneqtmp");
+    if (typechecker.is_int(get_type(typechecker)))
+        return ir_builder->CreateICmpNE(L, R, "neqtmp");
+    return CodegenError("Comparison of Invalid Types");
 }
-llvm::Value *fruitlang::comp_equal::sub_codegen(llvm::Value *L, llvm::Value *R) {
-    L = ir_builder->CreateFCmpUEQ(L, R, "eqtmp");
-    return ir_builder->CreateUIToFP(L, llvm::Type::getDoubleTy(*llvm_context), "booltmp");
+fruitlang::Type fruitlang::comp_not_equal::validate_and_fix_type([[maybe_unused]] fruitlang::Type typ, fruitlang::Typechecker &typechecker) {
+    return typechecker.get_type("bool");
 }
-llvm::Value *fruitlang::comp_greater::sub_codegen(llvm::Value *L, llvm::Value *R) {
-    L = ir_builder->CreateFCmpUGT(L, R, "gttmp");
-    return ir_builder->CreateUIToFP(L, llvm::Type::getDoubleTy(*llvm_context), "booltmp");
+llvm::Value *fruitlang::comp_equal::sub_codegen(llvm::Value *L, llvm::Value *R, fruitlang::Typechecker &typechecker) {
+    if (typechecker.is_float(get_type(typechecker)))
+        return ir_builder->CreateFCmpUEQ(L, R, "feqtmp");
+    if (typechecker.is_int(get_type(typechecker)))
+        return ir_builder->CreateICmpEQ(L, R, "eqtmp");
+    return CodegenError("Comparison of Invalid Types");
 }
-llvm::Value *fruitlang::comp_greater_equal::sub_codegen(llvm::Value *L, llvm::Value *R) {
-    L = ir_builder->CreateFCmpUGE(L, R, "gtetmp");
-    return ir_builder->CreateUIToFP(L, llvm::Type::getDoubleTy(*llvm_context), "booltmp");
+fruitlang::Type fruitlang::comp_equal::validate_and_fix_type([[maybe_unused]] fruitlang::Type typ, fruitlang::Typechecker &typechecker) {
+    return typechecker.get_type("bool");
 }
-llvm::Value *fruitlang::comp_less::sub_codegen(llvm::Value *L, llvm::Value *R) {
-    L = ir_builder->CreateFCmpULT(L, R, "lttmp");
-    return ir_builder->CreateUIToFP(L, llvm::Type::getDoubleTy(*llvm_context), "booltmp");
+llvm::Value *fruitlang::comp_greater::sub_codegen(llvm::Value *L, llvm::Value *R, fruitlang::Typechecker &typechecker) {
+    if (typechecker.is_float(get_type(typechecker)))
+        return ir_builder->CreateFCmpUGT(L, R, "fgttmp");
+    if (typechecker.is_int(get_type(typechecker)))
+        return ir_builder->CreateICmpSGT(L, R, "gttmp");
+    return CodegenError("Comparison of Invalid Types");
 }
-llvm::Value *fruitlang::comp_less_equal::sub_codegen(llvm::Value *L, llvm::Value *R) {
-    L = ir_builder->CreateFCmpULE(L, R, "ltetmp");
-    return ir_builder->CreateUIToFP(L, llvm::Type::getDoubleTy(*llvm_context), "booltmp");
+fruitlang::Type fruitlang::comp_greater::validate_and_fix_type([[maybe_unused]] fruitlang::Type typ, fruitlang::Typechecker &typechecker) {
+    return typechecker.get_type("bool");
+}
+llvm::Value *fruitlang::comp_greater_equal::sub_codegen(llvm::Value *L, llvm::Value *R, fruitlang::Typechecker &typechecker) {
+    if (typechecker.is_float(get_type(typechecker)))
+        return ir_builder->CreateFCmpUGE(L, R, "fgetmp");
+    if (typechecker.is_int(get_type(typechecker)))
+        return ir_builder->CreateICmpSGE(L, R, "getmp");
+    return CodegenError("Comparison of Invalid Types");
+}
+fruitlang::Type fruitlang::comp_greater_equal::validate_and_fix_type([[maybe_unused]] fruitlang::Type typ, fruitlang::Typechecker &typechecker) {
+    return typechecker.get_type("bool");
+}
+llvm::Value *fruitlang::comp_less::sub_codegen(llvm::Value *L, llvm::Value *R, fruitlang::Typechecker &typechecker) {
+    if (typechecker.is_float(get_type(typechecker)))
+        return ir_builder->CreateFCmpULT(L, R, "flttmp");
+    if (typechecker.is_int(get_type(typechecker)))
+        return ir_builder->CreateICmpSLT(L, R, "lttmp");
+    return CodegenError("Comparison of Invalid Types");
+}
+fruitlang::Type fruitlang::comp_less::validate_and_fix_type([[maybe_unused]] fruitlang::Type typ, fruitlang::Typechecker &typechecker) {
+    return typechecker.get_type("bool");
+}
+llvm::Value *fruitlang::comp_less_equal::sub_codegen(llvm::Value *L, llvm::Value *R, fruitlang::Typechecker &typechecker) {
+    if (typechecker.is_float(get_type(typechecker)))
+        return ir_builder->CreateFCmpULE(L, R, "fletmp");
+    if (typechecker.is_int(get_type(typechecker)))
+        return ir_builder->CreateICmpSLE(L, R, "letmp");
+    return CodegenError("Comparison of Invalid Types");
+}
+fruitlang::Type fruitlang::comp_less_equal::validate_and_fix_type([[maybe_unused]] fruitlang::Type typ, fruitlang::Typechecker &typechecker) {
+    return typechecker.get_type("bool");
 }

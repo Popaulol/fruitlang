@@ -2,6 +2,8 @@
 // Created by paul on 15.06.23.
 //
 
+#include "includes.h"
+
 #ifndef FRUITLANG_LEXER_H
 #define FRUITLANG_LEXER_H
 

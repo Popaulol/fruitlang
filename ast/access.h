@@ -2,12 +2,16 @@
 // Created by paul on 28.06.23.
 //
 
+#include "../includes.h"
+
 #ifndef FRUITLANG_ACCESS_H
 #define FRUITLANG_ACCESS_H
 
-#include <utility>
 
 #include "expr.h"
+
+#include <utility>
+
 namespace fruitlang {
 
     class access : public expr {
@@ -16,7 +20,9 @@ namespace fruitlang {
 
     protected:
         uint64_t render_dot(std::ofstream &) override;
-        llvm::Value *codegen() override;
+        llvm::Value *codegen(fruitlang::Typechecker &) override;
+
+        fruitlang::Type typecheck(fruitlang::Typechecker &typechecker) override;
 
     public:
         explicit access(std::string name) : name(std::move(name)){};

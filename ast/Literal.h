@@ -2,13 +2,17 @@
 // Created by paul on 26.06.23.
 //
 
+#include "../includes.h"
+
 #ifndef FRUITLANG_LITERAL_H
 #define FRUITLANG_LITERAL_H
 
-#include "../codegen.h"
 #include "ast.h"
 #include "expr.h"
+#include "../codegen.h"
+
 #include <cstdint>
+
 namespace fruitlang {
 
     class Literal : public expr {};
@@ -19,8 +23,8 @@ namespace fruitlang {
 
     protected:
         uint64_t render_dot(std::ofstream &) override;
-        llvm::Value *codegen() override { return CodegenError("Integer sind aktuell nicht implementiert!"); };
-        std::shared_ptr<Type> typecheck(fruitlang::Typechecker &) override;
+        llvm::Value *codegen(fruitlang::Typechecker &) override;
+        fruitlang::Type typecheck(fruitlang::Typechecker &) override;
 
     public:
         ~Int_Literal() override = default;
@@ -32,8 +36,8 @@ namespace fruitlang {
 
     protected:
         uint64_t render_dot(std::ofstream &) override;
-        llvm::Value *codegen() override;
-        std::shared_ptr<Type> typecheck(fruitlang::Typechecker &) override;
+        llvm::Value *codegen(fruitlang::Typechecker &) override;
+        fruitlang::Type typecheck(fruitlang::Typechecker &) override;
 
     public:
         ~Float_Literal() override = default;

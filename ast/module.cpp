@@ -3,6 +3,7 @@
 //
 
 #include "module.h"
+
 #include "../utils.h"
 
 namespace fruitlang {
@@ -15,8 +16,20 @@ namespace fruitlang {
         }
         return own_id;
     }
-    llvm::Function *Module::TopLVLCodegen() {
-        for (const auto &member: contents) member->TopLVLCodegen();
+    llvm::Function *Module::TopLVLCodegen([[maybe_unused]] Typechecker &typechecker) {
+        typechecker.push_scope();
+        for (const auto &member: contents) member->TopLVLCodegen(typechecker);
+        typechecker.pop_scope();
         return nullptr;
+    }
+    std::vector<Type> Module::get_types(Typechecker &typechecker) {
+        std::vector<Type> typs;
+        typechecker.push_scope();
+        for (const auto &member: contents)
+            for (const auto &typ: member->get_types(typechecker))
+                typs.push_back(typ);
+
+        typechecker.pop_scope();
+        return typs;
     }
 }// namespace fruitlang

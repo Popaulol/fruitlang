@@ -2,22 +2,32 @@
 // Created by paul on 26.06.23.
 //
 
+#include "../includes.h"
+
 #ifndef FRUITLANG_CALL_H
 #define FRUITLANG_CALL_H
 
-#include <utility>
-
 #include "expr.h"
+#include "../codegen.h"
+
+#include <utility>
+#include <string>
+#include <vector>
+#include <memory>
+
 namespace fruitlang {
 
     class call : public expr {
+        friend class type_callable;
     private:
         std::string ident;
         std::vector<std::shared_ptr<expr>> args;
 
     protected:
         uint64_t render_dot(std::ofstream &) override;
-        llvm::Value *codegen() override;
+        llvm::Value *codegen(fruitlang::Typechecker &) override;
+
+        fruitlang::Type typecheck(fruitlang::Typechecker &typechecker) override;
 
     public:
         ~call() override = default;

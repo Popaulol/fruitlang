@@ -2,13 +2,16 @@
 // Created by paul on 28.06.23.
 //
 
+#include "includes.h"
+
 #ifndef FRUITLANG_CODEGEN_H
 #define FRUITLANG_CODEGEN_H
 #include <iostream>
 #include <map>
 #include <memory>
 
-#include "/usr/share/doc/llvm-14-examples/examples/Kaleidoscope/include/KaleidoscopeJIT.h"
+// #include "/usr/share/doc/llvm-14-examples/examples/Kaleidoscope/include/KaleidoscopeJIT.h"
+#include "/home/paul/llvm-project-llvmorg-14.0.6/llvm/examples/Kaleidoscope/include/KaleidoscopeJIT.h"
 #include <llvm/ADT/APFloat.h>
 #include <llvm/ADT/STLExtras.h>
 #include <llvm/IR/BasicBlock.h>
@@ -34,6 +37,8 @@ namespace fruitlang {
     extern std::map<std::string, llvm::Value *> variables;
     extern std::unique_ptr<llvm::legacy::FunctionPassManager> function_pass_manager;
     extern std::unique_ptr<llvm::orc::KaleidoscopeJIT> jit_compiler;
+
+    extern llvm::ExitOnError ExitOnErr;
 
     llvm::Value *CodegenError(const std::string &msg);
     void InitializeLLVM();

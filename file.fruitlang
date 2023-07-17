@@ -1,0 +1,8 @@
+fn sin(a: f64) -> f64
+fn cos(a: f64) -> f64;
+fn cosf(a: f32) -> f32;
+fn bla(a: f32) -> f64: cosf(a + 3.14159);
+
+
+
+fn main() -> i32: 1 + 1;

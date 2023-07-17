@@ -7,3 +7,10 @@
 /keywords.dot.svg
 /out.dot
 /out.dot.svg
+/cmake-build-debug-wsl/
+*.dot
+*.svg
+*.png
+*.s
+*.ll
+a.out
