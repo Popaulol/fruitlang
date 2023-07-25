@@ -10,8 +10,8 @@
 #include <map>
 #include <memory>
 
-// #include "/usr/share/doc/llvm-14-examples/examples/Kaleidoscope/include/KaleidoscopeJIT.h"
-#include "/home/paul/llvm-project-llvmorg-14.0.6/llvm/examples/Kaleidoscope/include/KaleidoscopeJIT.h"
+#include "/usr/share/doc/llvm-14-examples/examples/Kaleidoscope/include/KaleidoscopeJIT.h"
+// #include "/home/paul/llvm-project-llvmorg-14.0.6/llvm/examples/Kaleidoscope/include/KaleidoscopeJIT.h"
 #include <llvm/ADT/APFloat.h>
 #include <llvm/ADT/STLExtras.h>
 #include <llvm/IR/BasicBlock.h>
