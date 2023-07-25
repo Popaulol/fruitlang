@@ -17,6 +17,8 @@
 #include <unordered_map>
 #include <utility>
 #include <vector>
+#include <optional>
+
 namespace fruitlang {
     class Type_ {
         friend class Typechecker;
