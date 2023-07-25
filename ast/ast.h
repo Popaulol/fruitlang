@@ -19,6 +19,8 @@ namespace fruitlang {
         friend class Module;
         friend class callable;
         friend class call;
+        friend class block;
+        friend class ast_if;
 
     protected:
         virtual std::string render_dot(std::ofstream &file) = 0;

@@ -219,6 +219,17 @@ namespace fruitlang {
             consume(TokenType::RightParentheses, "Expect ')' after expression.");
             return expr;
         }
+        if (match({TokenType::LeftBrace})) {
+            std::vector<std::shared_ptr<expr>> exprs;
+
+            while (match({TokenType::Newline, TokenType::Semicolon})) {}
+            while (!match({TokenType::RightBrace})) {
+                exprs.push_back(expression());
+                while (match({TokenType::Newline, TokenType::Semicolon})) {}
+                if (is_at_end()) error("Expect '}' at end of Block.");
+            }
+            return std::make_shared<block>(exprs);
+        }
         if (match({TokenType::Identifier})) {
             std::string name = lexer.prev().content;
             if (match({TokenType::LeftParentheses})) {

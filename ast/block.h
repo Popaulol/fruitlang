@@ -15,10 +15,19 @@
 namespace fruitlang {
 
     class block : public expr {
-        std::vector<expr> contents;
+        std::vector<std::shared_ptr<expr>> contents;
+
+    protected:
+        std::string render_dot(std::ofstream &file) override;
+        llvm::Value *codegen(Typechecker &typechecker) override;
 
     public:
-        explicit block(std::vector<expr> contents) : contents(std::move(contents)){};
+        explicit block( std::vector<std::shared_ptr<expr>> contents) : contents(std::move(contents)){}
+        ~block() override = default;
+
+    protected:
+        Type typecheck(Typechecker &typechecker) override;
+
     };
 
 }// namespace fruitlang
