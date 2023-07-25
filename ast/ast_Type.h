@@ -15,7 +15,7 @@ namespace fruitlang {
 
     class ast_Type : public ast {
     protected:
-        uint64_t render_dot(std::ofstream &) override;
+        std::string render_dot(std::ofstream &file) override;
 
     public:
         explicit ast_Type(std::string name) : name(std::move(name)){};

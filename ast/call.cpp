@@ -7,13 +7,22 @@
 #include "../utils.h"
 
 namespace fruitlang {
-    uint64_t call::render_dot(std::ofstream &f) {
-        uint64_t own_id = id();
-        f << "id_" << own_id << " [label=\"Call: " << ident << "\\n"
-          << "Type: " << type->name << "\"];\n";
+    std::string call::render_dot(std::ofstream &f) {
+        auto own_id = id();
+        std::string t_name = "NULL";
+        if (type) {
+            t_name = type->name;
+        }
+        f << own_id << " [label=\"Call: " << ident << "\\n"
+          << "Type: " << t_name << "\"];\n";
+
+        auto ident_id = id(ident);
+
+        f << own_id << " -> " << ident_id << " [constraint=false, style=dotted];\n";
+
         for (const auto &arg: args) {
             auto arg_id = arg->render_dot(f);
-            f << "id_" << own_id << " -> id_" << arg_id << " [lebel=\"Argument\"];\n";
+            f  << own_id << " -> " << arg_id << " [label=\"Argument\"];\n";
         }
         return own_id;
     }

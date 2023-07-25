@@ -8,16 +8,19 @@
 #include "../utils.h"
 
 namespace fruitlang {
-    uint64_t callable::render_dot(std::ofstream &f) {
-        uint64_t own_id = id();
-        f << "id_" << own_id << " [label=\"" << kind() << "(";
+    std::string callable::render_dot(std::ofstream &f) {
+        auto own_id = id(name);
+        if (m_content) f << "subgraph cluster_" << id() << " {\n";
+        f << own_id << " [label=\"" << kind() << "(";
         for (const auto &arg: m_arguments) {
             f << arg.name << ": " << arg.typ.name << ", ";
         }
         f << ") -> " << m_return_type.name << "\"];\n";
-        if (!m_content) return own_id;
-        auto other_id = m_content->render_dot(f);
-        f << "id_" << own_id << " -> id_" << other_id << ";\n";
+        if (m_content) {
+            auto other_id = m_content->render_dot(f);
+            f << own_id << " -> " << other_id << ";\n";
+            f << "}\n";
+        }
         return own_id;
     }
     llvm::Function *callable::TopLVLCodegen([[maybe_unused]] Typechecker &typechecker) {

@@ -18,7 +18,7 @@ namespace fruitlang {
     protected:
         std::shared_ptr<expr> operand;
 
-        uint64_t render_dot(std::ofstream &) override;
+        std::string render_dot(std::ofstream &file) override;
         virtual std::string op() = 0;
 
         llvm::Value *codegen(fruitlang::Typechecker &) override;

@@ -8,9 +8,9 @@
 #include "../utils.h"
 
 namespace fruitlang {
-    uint64_t ast_Type::render_dot(std::ofstream &f) {
-        uint64_t my_id = id();
-        f << "id_" << my_id << " [label=\"ast_Type: `" << name << "`\"];\n";
+    std::string ast_Type::render_dot(std::ofstream &f) {
+        auto my_id = id();
+        f << my_id << " [label=\"ast_Type: `" << name << "`\"];\n";
         return my_id;
     }
 }// namespace fruitlang

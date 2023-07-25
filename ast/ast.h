@@ -21,7 +21,7 @@ namespace fruitlang {
         friend class call;
 
     protected:
-        virtual uint64_t render_dot(std::ofstream &) = 0;
+        virtual std::string render_dot(std::ofstream &file) = 0;
 
     public:
         virtual ~ast() = 0;

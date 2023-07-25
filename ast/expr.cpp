@@ -35,13 +35,13 @@ namespace fruitlang {
     fruitlang::Type inserted_cast::typecheck(Typechecker &typechecker) {
         return typechecker.Error("An inserted cast should never be Typechecked, since it's always generated in a valid state by the typechecker itself!");
     }
-    uint64_t inserted_cast::render_dot(std::ofstream &file) {
+    std::string inserted_cast::render_dot(std::ofstream &file) {
         auto my_id = id();
-        file << "id_" << my_id << " [label=\"Inserted Cast"
+        file << my_id << " [label=\"Inserted Cast"
              << "\\n"
              << "Type: " << type->name << "\"];\n";
         auto child_id = child->render_dot(file);
-        file << "id_" << my_id << " -> id_" << child_id << ";\n";
+        file << my_id << " -> " << child_id << ";\n";
         return my_id;
     }
 

@@ -36,7 +36,7 @@ namespace fruitlang {
     protected:
         llvm::Value *codegen(Typechecker &) override;
         fruitlang::Type typecheck(fruitlang::Typechecker &) override;
-        uint64_t render_dot(std::ofstream &) override;
+        std::string render_dot(std::ofstream &file) override;
 
     public:
         inserted_cast(fruitlang::Type typ, std::shared_ptr<expr> child) : child(std::move(child)) { type = typ; };

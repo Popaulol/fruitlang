@@ -12,8 +12,9 @@ int main() {
     auto ast = fruitlang::Parser::parse(sstr.str());// ** 6.6 ");
 
     auto typechecker = fruitlang::Typechecker();
-    ast->get_types(typechecker);
     ast->render_dot("ast.dot");
+    ast->get_types(typechecker);
+    ast->render_dot("typed_ast.dot");
     ast->TopLVLCodegen(typechecker);
     fruitlang::ir_module->print(llvm::errs(), nullptr);
 

@@ -8,10 +8,14 @@
 #include "../utils.h"
 
 namespace fruitlang {
-    uint64_t access::render_dot(std::ofstream &f) {
-        uint64_t own_id = id();
-        f << "id_" << own_id << " [label=\"Access: " << name << "\\n"
-          << "Type: " << type->name << "\"];\n";
+    std::string access::render_dot(std::ofstream &f) {
+        std::string t_name = "NULL";
+        if (type) {
+            t_name = type->name;
+        }
+        auto own_id = id();
+        f << own_id << " [label=\"Access: " << name << "\\n"
+          << "Type: " << t_name << "\"];\n";
         return own_id;
     }
     llvm::Value *access::codegen(fruitlang::Typechecker &) {

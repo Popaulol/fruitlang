@@ -109,7 +109,7 @@ bool fruitlang::Typechecker::is_int(const fruitlang::Type &type) {
     return std::find(ints.begin(), ints.end(), type) != ints.end();
 }
 void fruitlang::Typechecker::add_function(const std::string &name, std::vector<fruitlang::Type> args, fruitlang::Type ret) {
-    auto typ = std::make_shared<type_callable>(name + std::to_string(id()), std::move(args), std::move(ret));
+    auto typ = std::make_shared<type_callable>(name + id(), std::move(args), std::move(ret));
     scope.define_variable(name, typ);
 }
 fruitlang::Type fruitlang::Typechecker::get_variable(const std::string &name) {

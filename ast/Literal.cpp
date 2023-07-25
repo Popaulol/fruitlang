@@ -7,13 +7,13 @@
 #include "../Typechecker.h"
 #include "../utils.h"
 
-uint64_t fruitlang::Float_Literal::render_dot(std::ofstream &file) {
+std::string fruitlang::Float_Literal::render_dot(std::ofstream &file) {
     auto my_id = id();
     std::string t_name = "NULL";
     if (type) {
         t_name = type->name;
     }
-    file << "id_" << my_id << " [label=\"" << value << "f"
+    file << my_id << " [label=\"" << value << "f"
          << "\\n"
          << "Type: " << t_name << "\"];\n";
     return my_id;
@@ -26,9 +26,9 @@ fruitlang::Type fruitlang::Float_Literal::typecheck(fruitlang::Typechecker &type
     return typechecker.get_type("f32");
 }
 
-uint64_t fruitlang::Int_Literal::render_dot(std::ofstream &file) {
+std::string fruitlang::Int_Literal::render_dot(std::ofstream &file) {
     auto my_id = id();
-    file << "id_" << my_id << " [label=\"" << value << "\"];\n";
+    file << my_id << " [label=\"" << value << "\"];\n";
     return my_id;
 }
 fruitlang::Type fruitlang::Int_Literal::typecheck(fruitlang::Typechecker &typechecker) {

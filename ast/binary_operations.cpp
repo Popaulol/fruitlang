@@ -7,22 +7,25 @@
 #include "../Typechecker.h"
 #include "../utils.h"
 
-uint64_t fruitlang::binary_op::render_dot(std::ofstream &file) {
+std::string fruitlang::binary_op::render_dot(std::ofstream &file) {
     auto my_id = id();
     std::string t_name = "NULL";
     if (type) {
         t_name = type->name;
     }
-    file << "id_" << my_id << " [label=\"" << op() << "\\n"
+    file << "subgraph cluster_" << id() << " {\n";
+    file << my_id << " [label=\"" << op() << "\\n"
          << "Type: " << t_name << "\"];\n";
 
     auto lhs_id = lhs->render_dot(file);
-    file << "id_" << my_id << " -> "
-         << "id_" << lhs_id << " [label=\"lhs\"];\n";
+    file  << my_id << " -> "
+         << lhs_id << " [label=\"lhs\"];\n";
 
     auto rhs_id = rhs->render_dot(file);
-    file << "id_" << my_id << " -> "
-         << "id_" << rhs_id << " [label=\"rhs\"];\n";
+    file << my_id << " -> "
+         << rhs_id << " [label=\"rhs\"];\n";
+
+    file << "}\n";
 
     return my_id;
 }

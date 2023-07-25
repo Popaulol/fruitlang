@@ -22,7 +22,7 @@ namespace fruitlang {
         uint64_t value;
 
     protected:
-        uint64_t render_dot(std::ofstream &) override;
+        std::string render_dot(std::ofstream &file) override;
         llvm::Value *codegen(fruitlang::Typechecker &) override;
         fruitlang::Type typecheck(fruitlang::Typechecker &) override;
 
@@ -35,7 +35,7 @@ namespace fruitlang {
         double value;
 
     protected:
-        uint64_t render_dot(std::ofstream &) override;
+        std::string render_dot(std::ofstream &file) override;
         llvm::Value *codegen(fruitlang::Typechecker &) override;
         fruitlang::Type typecheck(fruitlang::Typechecker &) override;
 

@@ -8,13 +8,13 @@
 #include "../codegen.h"
 #include "../utils.h"
 
-uint64_t fruitlang::unary_operation::render_dot(std::ofstream &file) {
+std::string fruitlang::unary_operation::render_dot(std::ofstream &file) {
     auto my_id = id();
-    file << "id_" << my_id << " [label=\"" << op() << "\"];\n";
+    file << my_id << " [label=\"" << op() << "\"];\n";
 
     auto operand_id = operand->render_dot(file);
-    file << "id_" << my_id << " -> "
-         << "id_" << operand_id << " [label=\"lhs\"];\n";
+    file << my_id << " -> "
+         << operand_id << " [label=\"lhs\"];\n";
 
     return my_id;
 }

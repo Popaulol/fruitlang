@@ -9,7 +9,7 @@
 
 #include <cstdint>
 namespace fruitlang {
-    uint64_t id();
+    std::string id(const std::string& name = "");
 }
 
 #endif//FRUITLANG_UTILS_H

@@ -21,7 +21,7 @@ namespace fruitlang {
         std::shared_ptr<expr> rhs;
 
         binary_op(std::shared_ptr<expr> lhs, std::shared_ptr<expr> rhs) : lhs(std::move(lhs)), rhs(std::move(rhs)){};
-        uint64_t render_dot(std::ofstream &) override;
+        std::string render_dot(std::ofstream &file) override;
 
         llvm::Value *codegen(fruitlang::Typechecker &) override;
 

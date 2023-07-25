@@ -38,7 +38,7 @@ namespace fruitlang {
         std::vector<Argument> m_arguments;
         ast_Type m_return_type;
 
-        uint64_t render_dot(std::ofstream &) override;
+        std::string render_dot(std::ofstream &file) override;
         virtual std::string kind() = 0;
 
         llvm::Function *TopLVLCodegen([[maybe_unused]] Typechecker&) override;

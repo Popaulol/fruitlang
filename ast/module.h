@@ -23,7 +23,7 @@ namespace fruitlang {
         std::vector<std::shared_ptr<ast>> contents;
 
     protected:
-        uint64_t render_dot(std::ofstream &) override;
+        std::string render_dot(std::ofstream &file) override;
         llvm::Function *TopLVLCodegen([[maybe_unused]] Typechecker &) override;
 
     public:
