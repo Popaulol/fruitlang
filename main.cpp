@@ -19,7 +19,7 @@ int main() {
     fruitlang::ir_module->print(llvm::errs(), nullptr);
 
     fruitlang::ExitOnErr(fruitlang::jit_compiler->addModule({std::move(fruitlang::ir_module), std::move(fruitlang::llvm_context)}));
-    auto main_fn = cantFail(fruitlang::jit_compiler->lookup("main"));
-    auto main_FP = (double (*)())(intptr_t) main_fn.getAddress();
-    std::cout << "Result: " << main_FP() << "\n";
+    auto main_fn = cantFail(fruitlang::jit_compiler->lookup("bla"));
+    auto main_FP = (double (*)(float))(intptr_t) main_fn.getAddress();
+    std::cout << "Result: " << main_FP(1.5f) << "\n";
 }
