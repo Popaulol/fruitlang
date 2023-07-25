@@ -40,7 +40,7 @@ llvm::Value *fruitlang::binary_op::codegen(fruitlang::Typechecker &typechecker) 
 fruitlang::Type fruitlang::binary_op::typecheck(fruitlang::Typechecker &typechecker) {
     auto lhs_type = lhs->get_type(typechecker);
     auto rhs_type = rhs->get_type(typechecker);
-    if (lhs_type == rhs_type) return lhs_type;
+    if (lhs_type == rhs_type) return validate_and_fix_type(lhs_type, typechecker);
 
 
     auto new_lhs = typechecker.promote_type_to(lhs, rhs_type);
