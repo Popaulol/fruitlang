@@ -24,6 +24,7 @@ namespace fruitlang {
         std::shared_ptr<Module> Mod();
         template<bool is_fn>
         std::shared_ptr<ast> callable_definition();
+        std::shared_ptr<expr> control_flow();
         std::shared_ptr<expr> expression();
         std::shared_ptr<expr> equality();
         std::shared_ptr<expr> comparison();

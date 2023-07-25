@@ -5,6 +5,7 @@
 #include "Parser.h"
 #include "ast/Literal.h"
 #include "ast/access.h"
+#include "ast/ast_if.h"
 #include "ast/binary_operations.h"
 #include "ast/call.h"
 #include "ast/module.h"
@@ -79,6 +80,26 @@ namespace fruitlang {
 
 
     std::shared_ptr<expr> Parser::expression() {
+        return control_flow();
+    }
+    std::shared_ptr<expr> Parser::control_flow() {
+        while (match({TokenType::if_, TokenType::while_, TokenType::for_, TokenType::do_})) {
+            switch (lexer.prev().Type) {
+                case TokenType::if_: {
+                    auto condition = equality();
+                    consume(TokenType::Colon, "Expected `:`");
+                    auto body = equality();
+                    if (match({TokenType::else_})) {
+                        consume(TokenType::Colon, "Expected `:`");
+                        auto else_block = equality();
+                        return std::make_shared<ast_if>(condition, body, else_block);
+                    }
+                    return std::make_shared<ast_if>(condition, body);
+                }
+                default:
+                    __builtin_unreachable();
+            }
+        }
         return equality();
     }
     std::shared_ptr<expr> Parser::equality() {

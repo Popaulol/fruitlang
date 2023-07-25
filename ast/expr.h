@@ -24,10 +24,12 @@ namespace fruitlang {
         friend class type_callable;
 
     protected:
-        virtual llvm::Value *codegen(Typechecker &) = 0;
         virtual fruitlang::Type typecheck(Typechecker &) = 0;
         fruitlang::Type type;
-        fruitlang::Type get_type(Typechecker &);
+
+    public:
+        virtual llvm::Value *codegen(Typechecker &) = 0;
+        fruitlang::Type get_type(Typechecker &, std::string callsite = "");
     };
 
     class inserted_cast : public expr {
