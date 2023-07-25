@@ -32,16 +32,18 @@ std::string fruitlang::Int_Literal::render_dot(std::ofstream &file) {
     return my_id;
 }
 fruitlang::Type fruitlang::Int_Literal::typecheck(fruitlang::Typechecker &typechecker) {
-    if (value < std::numeric_limits<uint8_t>::max()) return typechecker.get_type("i8");
-    if (value < std::numeric_limits<uint16_t>::max()) return typechecker.get_type("i16");
-    if (value < std::numeric_limits<uint32_t>::max()) return typechecker.get_type("i32");
-    if (value < std::numeric_limits<uint64_t>::max()) return typechecker.get_type("i64");
+    if (value < std::numeric_limits<bool>::max()) return typechecker.get_type("bool");
+    if (value < std::numeric_limits<int8_t>::max()) return typechecker.get_type("i8");
+    if (value < std::numeric_limits<int16_t>::max()) return typechecker.get_type("i16");
+    if (value < std::numeric_limits<int32_t>::max()) return typechecker.get_type("i32");
+    if (value < std::numeric_limits<int64_t>::max()) return typechecker.get_type("i64");
     return typechecker.Error(std::to_string(value) + " out of type range!\n");
 }
 llvm::Value *fruitlang::Int_Literal::codegen(fruitlang::Typechecker &) {
-    if (value < std::numeric_limits<uint8_t>::max()) return llvm::ConstantInt::get(*llvm_context, llvm::APInt(8, value));
-    if (value < std::numeric_limits<uint16_t>::max()) return llvm::ConstantInt::get(*llvm_context, llvm::APInt(16, value));
-    if (value < std::numeric_limits<uint32_t>::max()) return llvm::ConstantInt::get(*llvm_context, llvm::APInt(32, value));
-    if (value < std::numeric_limits<uint64_t>::max()) return llvm::ConstantInt::get(*llvm_context, llvm::APInt(64, value));
+    if (value < std::numeric_limits<bool>::max()) return llvm::ConstantInt::get(*llvm_context, llvm::APInt(1, value));
+    if (value < std::numeric_limits<int8_t>::max()) return llvm::ConstantInt::get(*llvm_context, llvm::APInt(8, value));
+    if (value < std::numeric_limits<int16_t>::max()) return llvm::ConstantInt::get(*llvm_context, llvm::APInt(16, value));
+    if (value < std::numeric_limits<int32_t>::max()) return llvm::ConstantInt::get(*llvm_context, llvm::APInt(32, value));
+    if (value < std::numeric_limits<int64_t>::max()) return llvm::ConstantInt::get(*llvm_context, llvm::APInt(64, value));
     return CodegenError(std::to_string(value) + " out of type range!\n");
 }
