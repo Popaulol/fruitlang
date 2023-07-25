@@ -35,7 +35,8 @@ class TreePart:
 
     def generate_c(self, f):
         if self.key:
-            f.write(f"return {{TokenType::{self.key}, text, current_pos - 1}};\n")
+            f.write(f"if (text.length() == {len(self.set_chars)})return {{TokenType::{self.key}, text, current_pos - "
+                    f"1}};\n")
         if len(self.set_chars) != 0:
             f.write(f"if (text.length() <= {len(self.set_chars)}) goto bail;\n")
         f.write(f"switch (text.at({len(self.set_chars)})) {{\n")
