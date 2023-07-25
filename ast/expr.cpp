@@ -8,11 +8,14 @@
 #include "../utils.h"
 
 namespace fruitlang {
-    fruitlang::Type expr::get_type(Typechecker &typechecker) {
-        std::cerr << "got type\n";
-        if (type) return type;
-        std::cerr << "uncached\n";
+    fruitlang::Type expr::get_type(Typechecker &typechecker, const std::string& callsite) {
+
+        if (type) {
+            std::cerr << callsite << "cached: \t" << type->name << "\n";
+            return type;
+        }
         type = typecheck(typechecker);
+        std::cerr << callsite <<"uncached: \t" << type->name << "\n";
         return type;
     }
     llvm::Value *inserted_cast::codegen(Typechecker &typechecker) {

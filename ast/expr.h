@@ -22,6 +22,7 @@ namespace fruitlang {
         friend class inserted_cast;
         friend class Typechecker;
         friend class type_callable;
+        friend class block;
 
     protected:
         virtual fruitlang::Type typecheck(Typechecker &) = 0;
@@ -29,7 +30,7 @@ namespace fruitlang {
 
     public:
         virtual llvm::Value *codegen(Typechecker &) = 0;
-        fruitlang::Type get_type(Typechecker &, std::string callsite = "");
+        fruitlang::Type get_type(Typechecker &, const std::string& callsite = "");
     };
 
     class inserted_cast : public expr {
